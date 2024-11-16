@@ -1,0 +1,87 @@
+* Useful Links
+** EDGAR search page: [[http://www.sec.gov/edgar/searchedgar/companysearch.html]]
+** SEC
+*** n-q definition [[http://www.investopedia.com/terms/s/sec-form-n-q.asp]]
+*** n-csr definition [[http://www.investopedia.com/terms/s/sec-form-n-csr.asp]]
+*** n-mfp definition [[https://www.merrillcorp.com/en/glossary/form-nmfp]]
+*** Wiki of SEC filings [[https://en.wikipedia.org/wiki/SEC_filing]]
+*** Corporate vs mutual fund filings [[https://irblog.prnewswire.com/2016/03/16/mutual-fund-sec-filings-v-corporate-issuer-sec-filings/]]
+*** SEC clearer explanation of n-q vs n-csr [[https://www.sec.gov/rules/final/33-8393.htm#EXECUTIVE]]
+*** Mutual Funds vs ETF tickers [[http://www.obliviousinvestor.com/index-funds-and-etfs-get-the-ticker-right/]]
+** Possible Alternatives
+*** Morningstar api (indirect?) [[https://gist.github.com/hahnicity/45323026693cdde6a116]]
+*** Scraping morningstar [[http://stackoverflow.com/questions/35668091/webscraping-financial-data-from-morningstar]]
+* Test Sources
+** 25 larget mutual funds [[http://www.marketwatch.com/tools/mutual-fund/top25largest]]
+** Alphabetical fund listing [[http://www.marketwatch.com/tools/mutual-fund/list?firstLetter=A]]
+** List of 13F-HR companies: [[https://whalewisdom.com/]]
+** TODO Find ETF examples
+** TODO Find small funds to test
+* N-Q sources
+** TODO Try training tesseract on sample images
+*** Pro: would have reliable, historical data for large funds
+*** Con: non-portable, requires user to train the same model, still have to validate data afterwards
+** TODO Try Google vision API
+*** Pro: highly reliable (99% accuracy on first try), fairly quick to parse
+*** Con: needs an account (possibly paying)
+** Clas structure on N-Q sources:
+*** Funds have 1 or more series associated with them 
+**** Can be found in the <SERIES-AND-CLASSES-CONTRACTS-DATA> tag in complete report txt
+*** N-Q class should be composed of multiple series, and series should have the holdings
+**** When generating the reports, format could be CIK_SERIESID_ACCEPTANCEDATE.txt
+*** Holdings are grouped in TR tags, which could make them easier to generically parse
+*** Will have to parse complete submission text for series data, then extract HTML from that for holdings
+
+* Design
+** Class Structure
+*** Base class: Holding
+**** entity
+**** shares
+**** value
+*** Base class: SECForm
+**** cik
+**** accepted_date
+**** submission_type
+*** Subclass: 13FHolding
+**** contains all extra fields that Holding has, plus extras from 13F-HR filing 
+**** nameOfIssuer --> entity
+**** shares --> shrsOrPrnAmt,sshPrnamt (if sshPrnamtType == 'SH')
+**** value --> value
+**** cusip
+**** investmentDiscretion
+**** titleOfClass
+**** votingAuthority
+*** Subclass: Report13FHR(SECForm) 
+**** holdings
+
+
+* TODOs
+** DONE Make parser support N-Q text reports
+   CLOSED: [2017-02-07 Tue 00:42]
+** TODO Support N-Q image reports
+** DONE Handle exception in main()
+   CLOSED: [2017-02-07 Tue 21:05]
+** TODO Support range of dates for report 
+** DONE Run code coverage report
+   CLOSED: [2017-02-07 Tue 23:10]
+** DONE Finish README
+   CLOSED: [2017-02-08 Wed 00:18]
+** DONE Group generated reports together
+   CLOSED: [2017-02-07 Tue 20:49]
+** TODO Stress test with multiple funds (large, small, etf, 13f)
+** DONE Refactor DTO into multiple files
+   CLOSED: [2017-02-07 Tue 21:19]
+** DONE Add requirements.txt and setup.py
+   CLOSED: [2017-02-07 Tue 23:02]
+** DONE Refactor parser methods inside report classes
+   CLOSED: [2017-02-07 Tue 21:56]
+** DONE Refactor test_holdings_parser to test_13fhr.py
+   CLOSED: [2017-02-07 Tue 21:07]
+** DONE Add logging to application
+   CLOSED: [2017-02-07 Tue 22:25]
+** DONE Detect 13fhr vs nq reports
+   CLOSED: [2017-02-07 Tue 20:25]
+** DONE Format and align/prettify variables
+   CLOSED: [2017-02-07 Tue 22:48]
+** DONE Print info to user telling them if parsing was successful
+   CLOSED: [2017-02-07 Tue 20:49]

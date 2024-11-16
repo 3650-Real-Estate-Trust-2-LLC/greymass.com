@@ -1,0 +1,6 @@
+*.pyc
+__pycache__
+.coverage
+holdings.egg-info/*
+.eggs/*
+htmlcov/*
